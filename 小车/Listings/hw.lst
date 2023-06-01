@@ -1,0 +1,135 @@
+C251 COMPILER V5.60.0,  hw                                                                 18/05/23  11:49:16  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE hw
+OBJECT MODULE PLACED IN .\Objects\hw.obj
+COMPILER INVOKED BY: E:\Keil_v5\C251\BIN\C251.EXE hw.c INTR2 BROWSE DEBUG PRINT(.\Listings\hw.lst) OBJECT(.\Objects\hw.o
+                    -bj) 
+
+stmt  level    source
+
+    1          #include "hw.h"  
+    2          #include "motor.h" 
+    3          
+    4          uint8 Car_State_number = 0; //小车状态值
+    5          //========================================================================
+    6          // 函数: void Motor_Init_Port(void)
+    7          // 描述: 初始化红外端口
+    8          // 参数: 
+    9          // 返回: none.
+   10          // 版本: VER1.0
+   11          // 日期: 2022-9-24
+   12          // 备注: 
+   13          //======================================================================== 
+   14          void HW_Init_Port(void)
+   15          {
+   16   1              
+   17   1                      P0M0 = 0x00;        
+   18   1              P0M0 = 0x00;    //0100 0000 P0.6高阻输入
+   19   1      
+   20   1              
+   21   1                      P4M0 = 0x00;        
+   22   1              P4M1 = 0x00;    //1000 0000 P4.7高阻输入
+   23   1              
+   24   1              
+   25   1                      P3M0 = 0x00;        
+   26   1              P3M0 = 0x00;     //0000 1100 P3.2/3.3高阻输入
+   27   1      
+   28   1              Get_HW_MR=1;
+   29   1              Get_HW_ML=1;
+   30   1              //Get_HW_R=1;
+   31   1              //Get_HW_L=1 ;
+   32   1                                              
+   33   1                                      
+   34   1      }
+   35          //========================================================================
+   36          // 函数: void Calculation_Data(void)
+   37          // 描述: 根据状态数值去进行PWM调节
+   38          // 参数:
+   39          // 返回: Count_State_number  1  前进    
+   40          // 返回: Count_State_number  2  左转   
+   41          // 返回: Count_State_number  3  右转  
+   42          // 版本: VER1.0
+   43          // 日期: 2022-9-24
+   44          // 备注: 
+   45          //========================================================================  
+   46          void Adjust_Pwm_data(void)
+   47          {
+   48   1                      switch(Car_State_number)
+   49   1                      {
+   50   2                              case 1:  Car_Forword(7);break;
+   51   2                              case 2:  Car_Back(10);;break;
+   52   2                              
+   53   2                              case 3:  Car_Turn_Left(50);break;
+   54   2                              case 4:  Car_Turn_Left(13);break;
+   55   2                              
+   56   2                              case 5:  Car_Turn_Right(50);break; 
+   57   2                              case 6:  Car_Turn_Right(13);break; 
+   58   2                      
+C251 COMPILER V5.60.0,  hw                                                                 18/05/23  11:49:16  PAGE 2   
+
+   59   2                              case 7:  Car_Stop();break;
+   60   2                              
+   61   2                              
+   62   2                              default :Car_Stop(); break;
+   63   2                      }       
+   64   1      }
+   65          
+   66          
+   67          
+   68          
+   69          
+   70          
+   71          
+   72          
+   73          
+   74          
+   75          
+   76          
+   77          
+   78          
+   79          
+   80          
+   81          
+   82          
+   83          
+   84          
+   85          
+   86          
+   87          
+   88          
+   89          
+   90          
+   91          
+   92          
+   93          
+   94          
+   95          
+   96          
+   97          
+   98          
+   99          
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =        84     ------
+  ecode size           =    ------     ------
+  data size            =         1     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =    ------     ------
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =    ------     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

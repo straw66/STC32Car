@@ -1,0 +1,152 @@
+C251 COMPILER V5.60.0,  main                                                               18/05/23  11:49:16  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE main
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: E:\Keil_v5\C251\BIN\C251.EXE main.c INTR2 BROWSE DEBUG PRINT(.\Listings\main.lst) OBJECT(.\Objects\
+                    -main.obj) 
+
+stmt  level    source
+
+    1          #include <STC32G.H>
+    2          #include "intrins.h"
+    3          #include "delay.h"  
+    4          #include "motor.h" 
+    5          #include "timer.h"    
+    6          #include "uart1.h" 
+    7          #include "sr04.h" 
+    8          #include "hw.h" 
+    9          #include "LED.h" 
+   10          
+   11          
+   12          void xunji(void);
+   13          
+   14          void main(void)
+   15          {
+   16   1          
+   17   1         WTST = 0;  //设置程序指令延时参数，赋值为0可将CPU执行指令的速度设置为最快
+   18   1         EAXFR = 1; //扩展寄存器(XFR)访问使能
+   19   1         CKCON = 0; //提高访问XRAM速度
+   20   1               
+   21   1               Motor_Init_Port(); //电机初始化
+   22   1      
+   23   1               Timer4Init(); //定时器初始化,计数时间使用
+   24   1              
+   25   1               Uart1_Init(); //串口初始化 
+   26   1        
+   27   1               HW_Init_Port(); //红外端口
+   28   1              
+   29   1               LED_Init_Port(); //LED显示
+   30   1           
+   31   1           SR04_Init_Port(); // 超声波IO初始化
+   32   1        while (1)
+   33   1              {       
+   34   2              
+   35   2              
+   36   2              if(Time_Count>=5) //100ms更新一次超声波距离
+   37   2                              {                               
+   38   3                                       Count_Number_DATA(); //测量距离
+   39   3                                                                      
+   40   3                                       Time_Count=0; //重新计时
+   41   3                  }  
+   42   2                              
+   43   2                      if(S>=10) //直走
+   44   2                      { 
+   45   3                              xunji();
+   46   3                      }                       
+   47   2      //              else if(S<20&&S>=10)
+   48   2      //                                      { 
+   49   2      //                                              Car_State_number=2;//后退
+   50   2      //                                              delay_ms(100);
+   51   2      //                                              
+   52   2      //                                      }                       
+   53   2                      else if(S<10&&S>=3)
+   54   2                                              {
+   55   3                                                       Car_State_number=7;//后退
+   56   3                                                       
+   57   3                                                       
+   58   3                                              }else{
+C251 COMPILER V5.60.0,  main                                                               18/05/23  11:49:16  PAGE 2   
+
+   59   3      
+   60   3                 Car_State_number=7;//后退
+   61   3      
+   62   3                                              }
+   63   2                        
+   64   2          }
+   65   1      }
+   66              
+   67          
+   68          void xunji(void)
+   69          {
+   70   1          //情况一：黑线在正中间，都没有识别到，直走
+   71   1          if(Get_HW_ML==0&&Get_HW_MR==0)
+   72   1          {
+   73   2              Car_State_number=1; //慢速直走 
+   74   2          }
+   75   1          //情况二：中间两个识别到黑线，直走
+   76   1          if(Get_HW_ML==1&&Get_HW_MR==1)
+   77   1          {                                   
+   78   2              while(1) //防止由于拐弯过大，要纠正回来
+   79   2              {  
+   80   3                  Car_State_number=1; //慢速直走 
+   81   3                  if(Get_HW_MR==0||Get_HW_ML==0)
+   82   3                  {  
+   83   4                      break; //跳出循环
+   84   4                  } 
+   85   3              }       
+   86   2          }
+   87   1          //情况三：左中侧检测到，稍微左转后直走
+   88   1          if(Get_HW_ML==1&&Get_HW_MR==0)// 慢左转
+   89   1          {                                                           
+   90   2              while(1) //防止由于拐弯过大，要纠正回来
+   91   2              {  
+   92   3                     Car_State_number=4;                                      
+   93   3                  if(Get_HW_ML==0||Get_HW_MR==1)
+   94   3                  {  
+   95   4                      break; //跳出循环
+   96   4                  } 
+   97   3              }       
+   98   2          }
+   99   1          
+  100   1          //情况四：右中侧检测到，稍微右转后直走
+  101   1          if(Get_HW_ML==0&&Get_HW_MR==1)//慢右转
+  102   1          {                                                           
+  103   2              while(1) //防止由于拐弯过大，要纠正回来
+  104   2              {  
+  105   3                     Car_State_number=6; //慢右转
+  106   3                  if(Get_HW_MR==0||Get_HW_ML==1)
+  107   3                  {  
+  108   4                      break; //跳出循环
+  109   4                  } 
+  110   3              }       
+  111   2          }
+  112   1                              
+  113   1      
+  114   1      }
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =       180     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+C251 COMPILER V5.60.0,  main                                                               18/05/23  11:49:16  PAGE 3   
+
+  edata size           =    ------     ------
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =    ------     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

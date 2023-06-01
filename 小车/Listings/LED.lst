@@ -1,0 +1,95 @@
+C251 COMPILER V5.60.0,  LED                                                                18/05/23  11:00:21  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE LED
+OBJECT MODULE PLACED IN .\Objects\LED.obj
+COMPILER INVOKED BY: E:\Keil_v5\C251\BIN\C251.EXE LED.c INTR2 BROWSE DEBUG PRINT(.\Listings\LED.lst) OBJECT(.\Objects\LE
+                    -D.obj) 
+
+stmt  level    source
+
+    1          #include "LED.h" 
+    2          
+    3          sbit LED_R=P0^5;                //重定义LED引脚功能
+    4          sbit LED_L=P3^4;                //重定义LED引脚功能 
+    5          
+    6          //========================================================================
+    7          // 函数: void LED_Init_Port(void)
+    8          // 描述: 延时函数。
+    9          // 参数: 初始化电机端口
+   10          // 返回: none.
+   11          // 版本: VER1.0
+   12          // 日期: 2022-9-24
+   13          // 备注: 
+   14          //======================================================================== 
+   15          void LED_Init_Port(void)
+   16          {       
+   17   1                      P3M0 = 0x10;        
+   18   1              P3M1 = 0x00; 
+   19   1      
+   20   1                      P0M0 = 0x20;        
+   21   1                      P0M1 = 0x00;            
+   22   1              
+   23   1                LED_OFF(); 
+   24   1              
+   25   1      }
+   26          //========================================================================
+   27          // 函数: void LED_ON(void)
+   28          // 描述: 延时函数。
+   29          // 参数: 初始化电机端口
+   30          // 返回: none.
+   31          // 版本: VER1.0
+   32          // 日期: 2022-9-24
+   33          // 备注: 
+   34          //======================================================================== 
+   35          void LED_ON(void)
+   36          { 
+   37   1              
+   38   1              LED_R=1;   //输出高电平
+   39   1              LED_L=1; 
+   40   1              
+   41   1      }
+   42          //========================================================================
+   43          // 函数: void LED_OFF(void)
+   44          // 描述: 延时函数。
+   45          // 参数: 初始化电机端口
+   46          // 返回: none.
+   47          // 版本: VER1.0
+   48          // 日期: 2022-9-24
+   49          // 备注: 
+   50          //======================================================================== 
+   51          void LED_OFF(void)
+   52          { 
+   53   1              
+   54   1              LED_R=0;   //输出低电平
+   55   1              LED_L=0; 
+   56   1              
+   57   1      }
+   58          
+C251 COMPILER V5.60.0,  LED                                                                18/05/23  11:00:21  PAGE 2   
+
+   59          
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =        25     ------
+  ecode size           =    ------     ------
+  data size            =    ------     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =    ------     ------
+  bit size             =    ------     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =    ------     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

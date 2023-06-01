@@ -1,0 +1,187 @@
+C251 COMPILER V5.60.0,  sr04                                                               18/05/23  11:00:22  PAGE 1   
+
+
+C251 COMPILER V5.60.0, COMPILATION OF MODULE sr04
+OBJECT MODULE PLACED IN .\Objects\sr04.obj
+COMPILER INVOKED BY: E:\Keil_v5\C251\BIN\C251.EXE sr04.c INTR2 BROWSE DEBUG PRINT(.\Listings\sr04.lst) OBJECT(.\Objects\
+                    -sr04.obj) 
+
+stmt  level    source
+
+    1          #include "sr04.h"    
+    2          #include "delay.h" 
+    3          #include "uart1.h"  
+    4          #include "motor.h"  
+    5          #include "timer.h" 
+    6          #include "hw.h"
+    7          sbit Trig = P1^3;
+    8          sbit Echo = P4^0;
+    9          //uint8 Car_State_number = 0; //小车状态值
+   10          //uint8 Car_State2_number = 0; //小车状态值
+   11          /*******************************************************************************
+   12          * 函 数 名         : SR04_Init_Port(); 
+   13          
+   14          * 函数功能                 : 主函数
+   15          * 输    入         : 无
+   16          * 输    出         : 无
+   17          *******************************************************************************/
+   18          void SR04_Init_Port(void)
+   19          {
+   20   1                      P1M0 = 0x00;        //将P2.0,P2.1,P2.2,P2.3口单独设置为双向输出模式  0000 1111
+   21   1              P1M1 = 0x00;    
+   22   1              
+   23   1                      P4M0 = 0x00;        //将P1.4,P1.5,P1.6,P1.7口单独设置为双向输出模式  0000 1111
+   24   1              P4M1 = 0x00;     
+   25   1              
+   26   1      }
+   27          //========================================================================
+   28          // 函数: void Motor_Init_Port(void)
+   29          // 描述: 延时函数。
+   30          // 参数: 初始化电机端口
+   31          // 返回: none.
+   32          // 版本: VER1.0
+   33          // 日期: 2022-9-24
+   34          // 备注: 
+   35          //======================================================================== 
+   36           void  StartModule(void)                         //启动模块
+   37            {
+   38   1                Trig=1;                                            //启动一次模块
+   39   1                _nop_(); 
+   40   1                _nop_(); 
+   41   1                _nop_(); 
+   42   1                _nop_(); 
+   43   1                _nop_(); 
+   44   1                _nop_(); 
+   45   1                _nop_(); 
+   46   1                _nop_(); 
+   47   1                _nop_(); 
+   48   1                _nop_(); 
+   49   1                _nop_(); 
+   50   1                _nop_(); 
+   51   1                _nop_(); 
+   52   1                _nop_(); 
+   53   1                _nop_(); 
+   54   1                _nop_(); 
+   55   1                _nop_();
+   56   1                _nop_(); 
+   57   1                _nop_(); 
+   58   1                _nop_(); 
+C251 COMPILER V5.60.0,  sr04                                                               18/05/23  11:00:22  PAGE 2   
+
+   59   1                _nop_();
+   60   1                Trig=0;
+   61   1        }
+   62          //========================================================================
+   63          // 函数: void Count_Number_DATA(void)
+   64          // 描述: 获取数据
+   65          // 参数: 
+   66          // 返回: none.
+   67          // 版本: VER1.0
+   68          // 日期: 2022-9-24
+   69          // 备注: 
+   70          //======================================================================== 
+   71          void Count_Number_DATA(void)
+   72          {
+   73   1                         StartModule(); //启动模块
+   74   1                   while(!Echo);              //当RX为零时等待
+   75   1                   TR0=1;                         //开启计数
+   76   1                   while(Echo);                       //当RX为1计数并等待
+   77   1                   TR0=0;                             //关闭计数   
+   78   1             Calculation_Data();      
+   79   1      }
+   80          //========================================================================
+   81          // 函数: void Calculation_Data(void)
+   82          // 描述: 计算数据
+   83          // 参数:
+   84          // 返回: none.
+   85          // 版本: VER1.0
+   86          // 日期: 2022-9-24
+   87          // 备注: 
+   88          //======================================================================== 
+   89          unsigned int  time=0; 
+   90          unsigned int S=0; 
+   91          bit  flag =0;
+   92          void Calculation_Data(void)
+   93          {
+   94   1          ET0=0;
+   95   1               time=TH0*256+TL0;
+   96   1               TH0=0;
+   97   1               TL0=0;
+   98   1               S=(time*1.87)/100/2;     //算出来是CM  
+   99   1              ET0=1;
+  100   1          
+  101   1         //Uart_Send_ADC_data(S);  //把数据发到串口
+  102   1              
+  103   1      }
+  104          //========================================================================
+  105          // 函数: void Calculation_Data(void)
+  106          // 描述: 根据状态数值去进行PWM调节
+  107          // 参数:
+  108          // 返回: Count_State_number  1  前进   
+  109          // 返回: Count_State_number  2  后退   
+  110          // 返回: Count_State_number  3  左转   
+  111          // 返回: Count_State_number  4  右转  
+  112          // 返回: Count_State_number  5  停止 
+  113          // 版本: VER1.0
+  114          // 日期: 2022-9-24
+  115          // 备注: 
+  116          //========================================================================  
+  117          //void Adjust_Pwm_data(void)
+  118          //{
+  119          //              switch(Car_State_number)
+  120          //              {
+  121          //                      case 1:  Car_Forword(10);break;
+  122          //                      case 2:  Car_Back(10);break;
+  123          //                      case 3:  Car_Turn_Left(20);break;
+  124          //                      case 4:  Car_Turn_Right(20);break;
+C251 COMPILER V5.60.0,  sr04                                                               18/05/23  11:00:22  PAGE 3   
+
+  125          //                      case 5:  Car_Stop();break;
+  126          //                      default :Car_Stop(); break;
+  127          //              }       
+  128          //}
+  129          
+  130          
+  131          
+  132          
+  133          
+  134          
+  135          
+  136          
+  137          
+  138          
+  139          
+  140          
+  141          
+  142          
+  143          
+  144          
+  145          
+  146          
+  147          
+  148          
+  149          
+
+
+Module Information          Static   Overlayable
+------------------------------------------------
+  code size            =       141     ------
+  ecode size           =    ------     ------
+  data size            =         4     ------
+  idata size           =    ------     ------
+  pdata size           =    ------     ------
+  xdata size           =    ------     ------
+  xdata-const size     =    ------     ------
+  edata size           =    ------     ------
+  bit size             =         1     ------
+  ebit size            =    ------     ------
+  bitaddressable size  =    ------     ------
+  ebitaddressable size =    ------     ------
+  far data size        =    ------     ------
+  huge data size       =    ------     ------
+  const size           =    ------     ------
+  hconst size          =    ------     ------
+End of Module Information.
+
+
+C251 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
